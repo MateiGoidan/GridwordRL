@@ -1,4 +1,4 @@
-from envs.generator import generate_gridworld_a
+from envs.grid_generator import generate_gridworld_a
 from envs.gridworld_a import GridworldA
 
 config_a = generate_gridworld_a(seed=2)

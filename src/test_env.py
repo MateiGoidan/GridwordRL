@@ -1,4 +1,4 @@
-from envs.generator import generate_gridworld_a, generate_gridworld_b
+from envs.grid_generator import generate_gridworld_a, generate_gridworld_b
 from envs.gridworld_a import GridworldA
 from envs.gridworld_b import GridworldB
 
