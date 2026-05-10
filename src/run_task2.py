@@ -9,7 +9,7 @@ from utils.plotting import plot_learning_curves
 
 
 NUMB_EPISODES = 500
-N_SEEDS    = 5         
+NUMB_SEEDS    = 5         
 EVAL_EVERY = 50
 
 ALPHA   = 0.1          
@@ -18,7 +18,6 @@ GAMMA   = 1.0
 
 
 def run_sarsa_on_gridB(numb_actions: int, numb_seeds: int) -> list:
-    """Run SARSA on Gridworld B with given number of actions across n_seeds."""
     grid_config = gridworld_b()
     runs = []
     for seed in range(numb_seeds):
@@ -44,29 +43,29 @@ def summarise(runs: list) -> dict:
     convergence_eps_clean = [c for c in convergence_eps if c is not None]
     
     return {
-        "n_seeds": len(runs),
+        "numb_seeds": len(runs),
         "convergence_episode_mean": (
             float(np.mean(convergence_eps_clean)) if convergence_eps_clean else None
         ),
         "path_efficiency_mean": float(np.mean([
-            path_efficiency(r["eval_steps"]) for r in runs
+            path_efficiency(r["episode_lengths"]) for r in runs
         ])),
-        "robustness_std": robustness([r["eval_steps"] for r in runs]),
+        "robustness_std": robustness([r["episode_lengths"] for r in runs]),
     }
 
 
 def main():
     print("=" * 70)
     print("TASK 2 — SARSA on Gridworld B: 4 vs 8 actions")
-    print(f"Episodes: {NUMB_EPISODES} | Seeds: {N_SEEDS} | α={ALPHA}, ε={EPSILON}")
+    print(f"Episodes: {NUMB_EPISODES} | Seeds: {NUMB_SEEDS} | alpha={ALPHA}, epsilon={EPSILON}")
     print("=" * 70)
     
     results = {}
     summaries = {}
-    for n_actions in [4, 8]:
-        label = f"SARSA ({n_actions} actions)"
+    for numb_actions in [4, 8]:
+        label = f"SARSA ({numb_actions} actions)"
         print(f"\nRunning {label}...", end=" ")
-        runs = run_sarsa_on_gridB(n_actions, N_SEEDS)
+        runs = run_sarsa_on_gridB(numb_actions, NUMB_SEEDS)
         results[label] = runs
         summaries[label] = summarise(runs)
         print(
@@ -79,8 +78,8 @@ def main():
     save_experiment("task2_sarsa_4_vs_8_actions", {
         "task":            "Task 2 — SARSA 4 vs 8 actions on Gridworld B",
         "hyperparameters": {"alpha": ALPHA, "epsilon": EPSILON, "gamma": GAMMA},
-        "n_episodes":      NUMB_EPISODES,
-        "n_seeds":         N_SEEDS,
+        "numb_episodes":      NUMB_EPISODES,
+        "numb_seeds":         NUMB_SEEDS,
         "results":         results,
         "summaries":       summaries,
     })
@@ -88,7 +87,7 @@ def main():
     # ── Plot ──────────────────────────────────────────────────────────────────
     plot_learning_curves(
         results,
-        title=f"Task 2 — SARSA on Gridworld B: 4 vs 8 actions (α={ALPHA}, ε={EPSILON})",
+        title=f"Task 2 — SARSA on Gridworld B: 4 vs 8 actions (alpha={ALPHA}, epsilon={EPSILON})",
         save_name="task2_sarsa_4_vs_8_actions",
     )
     

@@ -29,13 +29,13 @@ ALGORITHMS = [
 # (name, config-fn, EnvClass, extra env kwargs)
 GRIDWORLDS = [
     ("GridA", gridworld_a, GridworldA, {}),
-    ("GridB", gridworld_b, GridworldB, {"n_actions": 4}),
+    ("GridB", gridworld_b, GridworldB, {"numb_actions": 4}),
 ]
 
 
-def run_one_config(AgentClass, env_factory, alpha, epsilon, n_seeds):
+def run_one_config(AgentClass, env_factory, alpha, epsilon, numb_seeds):
     runs = []
-    for seed in range(n_seeds):
+    for seed in range(numb_seeds):
         env = env_factory()
         agent = AgentClass(
             numb_states=env.numb_states,
@@ -57,33 +57,33 @@ def summarise(runs):
     convergence_eps_clean = [c for c in convergence_eps if c is not None]
     
     return {
-        "n_seeds": len(runs),
+        "numb_seeds": len(runs),
         "convergence_episodes_per_seed": convergence_eps,
         "convergence_episode_mean": (
             float(np.mean(convergence_eps_clean)) if convergence_eps_clean else None
         ),
         "path_efficiency_mean": float(np.mean([
-            path_efficiency(r["eval_steps"]) for r in runs
+            path_efficiency(r["episode_lengths"]) for r in runs
         ])),
-        "robustness_std": robustness([r["eval_steps"] for r in runs]),
+        "robustness_std": robustness([r["episode_lengths"] for r in runs]),
     }
 
 def safe_filename(s: str) -> str:
     """Make a string safe for use in a filename."""
     return s.replace(" ", "_").replace("-", "_")
 
-def run_algorithm_comparison(grid_name, env_factory, alpha, epsilon, n_seeds):
+def run_algorithm_comparison(grid_name, env_factory, alpha, epsilon, numb_seeds):
     """
     Run all three algorithms with the SAME hyperparameters and produce
     one comparison plot + JSON.
     """
-    print(f"\n=== Algorithm comparison on {grid_name} (α={alpha}, ε={epsilon}) ===")
+    print(f"\n=== Algorithm comparison on {grid_name} (alpha={alpha}, epsilon={epsilon}) ===")
     
     results = {}
     summaries = {}
     for algo_name, AgentClass in ALGORITHMS:
         print(f"  Running {algo_name}...", end=" ")
-        runs = run_one_config(AgentClass, env_factory, alpha, epsilon, n_seeds)
+        runs = run_one_config(AgentClass, env_factory, alpha, epsilon, numb_seeds)
         results[algo_name] = runs
         summaries[algo_name] = summarise(runs)
         print(
@@ -92,22 +92,20 @@ def run_algorithm_comparison(grid_name, env_factory, alpha, epsilon, n_seeds):
             f"robustness={summaries[algo_name]['robustness_std']:.2f}"
         )
     
-    # ── Save JSON ─────────────────────────────────────────────────────────────
     fname = f"{grid_name}_algorithm_comparison"
     save_experiment(fname, {
         "grid":           grid_name,
         "experiment":     "algorithm_comparison",
         "hyperparameters": {"alpha": alpha, "epsilon": epsilon, "gamma": GAMMA},
-        "n_episodes":     NUMB_EPISODES,
-        "n_seeds":        n_seeds,
+        "numb_episodes":     NUMB_EPISODES,
+        "numb_seeds":        numb_seeds,
         "results":        results,
         "summaries":      summaries,
     })
     
-    # ── Plot: one curve per algorithm, using algorithm colours ───────────────
     plot_learning_curves(
         results,
-        title=f"Algorithm Comparison on {grid_name} (α={alpha}, ε={epsilon})",
+        title=f"Algorithm Comparison on {grid_name} (alpha={alpha}, epsilon={epsilon})",
         save_name=fname,
     )
 
@@ -120,7 +118,6 @@ def main():
     for grid_name, grid_config_fn, EnvClass, env_kwargs in GRIDWORLDS:
         print(f"\n{'═' * 70}\n  GRIDWORLD: {grid_name}\n{'═' * 70}")
         
-        # The canonical grid config — fixed for all experiments on this gridworld
         grid_config = grid_config_fn()
         env_factory = lambda: EnvClass(grid_config, **env_kwargs)
         
@@ -138,7 +135,7 @@ def main():
                     else:
                         alpha, epsilon = fixed_value, value
                     
-                    print(f"  α={alpha}, ε={epsilon}, {NUMB_SEEDS} seeds...", end=" ")
+                    print(f"  alpha={alpha}, epsilon={epsilon}, {NUMB_SEEDS} seeds...", end=" ")
                     runs = run_one_config(
                         AgentClass, env_factory, alpha, epsilon, NUMB_SEEDS
                     )
@@ -163,8 +160,8 @@ def main():
                     "algorithm":  algo_name,
                     "sweep":      sweep_name,
                     "fixed":      {fixed_param: fixed_value, "gamma": GAMMA},
-                    "n_episodes": NUMB_EPISODES,
-                    "n_seeds":    NUMB_SEEDS,
+                    "numb_episodes": NUMB_EPISODES,
+                    "numb_seeds":    NUMB_SEEDS,
                     "results_per_value": results_per_value,
                 })
                 
@@ -184,12 +181,9 @@ def main():
     print("All experiments complete. Results in results/experiments/")
     print("=" * 70)
 
-    # ──────────────────────────────────────────────────────────────────────────
-    # Algorithm comparison plots — one per gridworld, with all 3 algorithms
-    # ──────────────────────────────────────────────────────────────────────────
     print(f"\n{'═' * 70}\n  ALGORITHM COMPARISONS\n{'═' * 70}")
     
-    COMPARISON_ALPHA   = 0.5     # value where all 3 algorithms perform well
+    COMPARISON_ALPHA   = 0.5    
     COMPARISON_EPSILON = 0.1
     
     for grid_name, grid_config_fn, EnvClass, env_kwargs in GRIDWORLDS:

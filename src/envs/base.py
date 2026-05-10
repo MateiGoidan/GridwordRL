@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 
-
 ACTIONS_4 = {
     0: (-1,  0),   # UP
     1: ( 1,  0),   # DOWN
@@ -16,10 +15,9 @@ ACTIONS_8 = {
     7: (-1, -1),   # UP-LEFT
 }
 
-
 class BaseGridworld(ABC):
     def __init__(self, config: dict, numb_actions: int = 4):
-        assert numb_actions in (4, 8), "n_actions must be 4 or 8"
+        assert numb_actions in (4, 8), "numb_actions must be 4 or 8"
         
         self.rows = config["rows"]
         self.cols = config["cols"]

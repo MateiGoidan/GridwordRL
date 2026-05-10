@@ -20,13 +20,13 @@ def convergence_episode(
     below = np.where(rolling <= threshold)[0]
     return int(below[0] + window - 1) if len(below) > 0 else None
 
-def path_efficiency(eval_steps: list[float], last_n: int = 3) -> float:
-    if len(eval_steps) == 0:
+def path_efficiency(episode_lengths: list[int], last_n: int = 50) -> float:
+    if len(episode_lengths) == 0:
         return float("inf")
-    return float(np.mean(eval_steps[-last_n:]))
+    return float(np.mean(episode_lengths[-last_n:]))
 
-def robustness(per_seed_eval_steps: list[list[float]], last_n: int = 3) -> float:
-    if len(per_seed_eval_steps) < 2:
+def robustness(per_seed_episode_lengths: list[list[int]], last_n: int = 50) -> float:
+    if len(per_seed_episode_lengths) < 2:
         return 0.0
-    final_per_seed = [path_efficiency(es, last_n) for es in per_seed_eval_steps]
+    final_per_seed = [path_efficiency(el, last_n) for el in per_seed_episode_lengths]
     return float(np.std(final_per_seed))

@@ -1,6 +1,5 @@
 from envs.base import BaseGridworld
 
-
 class GridworldB(BaseGridworld):
     def __init__(self, config: dict, numb_actions: int = 4):
         super().__init__(config, numb_actions)

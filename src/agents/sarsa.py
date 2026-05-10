@@ -113,4 +113,4 @@ class SARSAAgent:
         }
     
     def reset_q(self) -> None:
-        self.Q = np.zeros((self.n_states, self.n_actions))
+        self.Q = np.zeros((self.numb_states, self.numb_actions))

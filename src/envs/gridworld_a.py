@@ -1,8 +1,8 @@
 from envs.base import BaseGridworld
 
 class GridworldA(BaseGridworld):
-    def __init__(self, config: dict, n_actions: int = 4):
-        super().__init__(config, n_actions)
+    def __init__(self, config: dict, numb_actions: int = 4):
+        super().__init__(config, numb_actions)
         self.obstacles = config["obstacles"]
     
     def step(self, action: int) -> tuple[tuple[int, int], float, bool]:
