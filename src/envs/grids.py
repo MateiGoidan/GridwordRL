@@ -12,7 +12,6 @@ def gridworld_a() -> dict:
         },
     }
 
-
 def gridworld_b() -> dict:
     return {
         "rows": 7,

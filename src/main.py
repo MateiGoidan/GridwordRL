@@ -8,25 +8,20 @@ from agents.qlearning import QLearningAgent
 from agents.sarsa import SARSAAgent
 from agents.double_qlearning import DoubleQLearningAgent
 
-grid = gridworld_a()
-env = GridworldA(grid)
-
-print(f"Grid: {env.rows}x{env.cols}")
-print(f"S={env.start}, G={env.goal}")
-print(f"Obstacles: {len(env.obstacles)}")
-print(f"State space size: {env.numb_states}")
-print(f"Action space size: {env.numb_actions}")
-
+results = {}
 for AgentClass, name in [
     (SARSAAgent, "SARSA"),
     (QLearningAgent, "Q-Learning"),
     (DoubleQLearningAgent, "Double Q-Learning"),
 ]:
+    grid = gridworld_a()
+    env = GridworldA(grid)
     agent = AgentClass(env.numb_states, env.numb_actions, alpha=0.2, epsilon=0.1, seed=0)
     numb_episodes = 500
 
     print(f"\nTraining {name} for {numb_episodes} episodes...")
     metrics = agent.train(env, numb_episodes)
+    results[name] = metrics
     
     lengths = metrics["episode_lengths"]
     print(f"\nFirst 10 episodes (steps): {lengths[:10]}")
@@ -38,11 +33,8 @@ for AgentClass, name in [
     for ep, steps in zip(metrics["eval_episodes"], metrics["eval_steps"]):
         print(f"  After episode {ep}: avg {steps:.1f} steps to goal")
 
-    safe_name = name.replace(" ", "_").replace("-", "_")
-    save_name=f"alpha02_{safe_name}_test"
-
-    plot_learning_curves(
-        {f"{name} Learning": metrics},
-        title=f"{name} on Gridworld A",
-        save_name=save_name,
-    )
+plot_learning_curves(
+    results,
+    title="Gridworld A Comparison",
+    save_name="gridworld_a_comparison",
+)
