@@ -18,17 +18,17 @@ ACTIONS_8 = {
 
 
 class BaseGridworld(ABC):
-    def __init__(self, config: dict, n_actions: int = 4):
-        assert n_actions in (4, 8), "n_actions must be 4 or 8"
+    def __init__(self, config: dict, numb_actions: int = 4):
+        assert numb_actions in (4, 8), "n_actions must be 4 or 8"
         
         self.rows = config["rows"]
         self.cols = config["cols"]
         self.start = config["start"]
         self.goal = config["goal"]
         
-        self.n_actions = n_actions
-        self.actions = ACTIONS_4 if n_actions == 4 else ACTIONS_8
-        self.n_states = self.rows * self.cols
+        self.numb_actions = numb_actions
+        self.actions = ACTIONS_4 if numb_actions == 4 else ACTIONS_8
+        self.numb_states = self.rows * self.cols
         
         self.agent_pos = self.start
     
@@ -42,7 +42,7 @@ class BaseGridworld(ABC):
         (next_state, reward, done)
         """
     
-    def state_to_index(self, state: tuple[int, int]) -> int:
+    def get_index(self, state: tuple[int, int]) -> int:
         return state[0] * self.cols + state[1]
     
     def _clamp(self, r: int, c: int) -> tuple[int, int]:
