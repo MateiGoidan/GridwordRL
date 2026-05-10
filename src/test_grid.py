@@ -1,10 +1,8 @@
-from envs.generator import generate_gridworld_a, generate_gridworld_b
+from envs.grid_generator import generate_gridworld_a, generate_gridworld_b
+from envs.grids import *
 
-seed = 42
-
-# Gridworld A
-grid_a = generate_gridworld_a(seed)
-print("=== Gridworld A ===")
+grid_a = gridworld_a()
+print("\nGridworld A")
 print(f"Size: {grid_a['rows']} x {grid_a['cols']}")
 print(f"S={grid_a['start']}, G={grid_a['goal']}")
 print(f"Obstacles: {len(grid_a['obstacles'])}")
@@ -23,9 +21,8 @@ for r in range(grid_a['rows']):
             row_str += ". "
     print(row_str)
 
-# Gridworld B
-grid_b = generate_gridworld_b(seed)
-print("\n=== Gridworld B ===")
+grid_b = gridworld_b()
+print("\nGridworld B")
 print(f"Size: {grid_b['rows']} x {grid_b['cols']}")
 print(f"S={grid_b['start']}, G={grid_b['goal']}")
 print(f"Wind: {grid_b['wind']}")
